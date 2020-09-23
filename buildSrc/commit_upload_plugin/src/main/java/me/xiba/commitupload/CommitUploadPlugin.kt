@@ -18,6 +18,10 @@ class CommitUploadPlugin : Plugin<Project> {
     companion object{
         const val FILENAME_GIT_COMMIT_SHELL = "gitcommit.sh"
         const val FILENAME_GIT_COMMIT_PROPERTIES = "gitcommit.properties"
+
+        const val TASKNAME_COMMIT_UPLOAD = "commitUpload"
+
+        const val PROPERTIES_KEY_COMMIT_MESSAGE = "commitMessage"
     }
 
     override fun apply(project: Project) {
@@ -41,7 +45,7 @@ class CommitUploadPlugin : Plugin<Project> {
      * 使用命令行执行shell文件
      */
     private fun createCommitTask(project: Project){
-        var task = project.tasks.create("${project.name}_commitUpload", Exec::class.java)
+        var task = project.tasks.create("${project.name}_$TASKNAME_COMMIT_UPLOAD", Exec::class.java)
         // 任务的Group
         task.group = "CommitAndUpload"
         // 创建输出流，用来读取命令行的输出
@@ -64,9 +68,7 @@ class CommitUploadPlugin : Plugin<Project> {
             }
 
             // 获取commitMessage
-            var commitMessage = gitCommitProperties.getProperty("commitMessage")
-
-            println("commitMessage=${commitMessage}")
+            var commitMessage = gitCommitProperties.getProperty(PROPERTIES_KEY_COMMIT_MESSAGE)
 
             // 设置工作目录
             task.workingDir(project.projectDir)
@@ -75,15 +77,15 @@ class CommitUploadPlugin : Plugin<Project> {
             // 设置命令行输出
             task.standardOutput = out
             // 执行提交脚本
-            task.commandLine("bash", "gitcommit.sh", commitMessage)
+            task.commandLine("bash", FILENAME_GIT_COMMIT_SHELL, commitMessage)
         }
 
         // 执行后的设置
         task.doLast {
             // 获取退出值
-            println("CommitUploadPlugin: ${project.name}_commitUpload : 执行结果: ${task.execResult?.exitValue}")
+            println("CommitUploadPlugin: ${project.name}_$TASKNAME_COMMIT_UPLOAD : 执行结果: ${task.execResult?.exitValue}")
             // 获取命令行的输出
-            println("CommitUploadPlugin: ${project.name}_commitUpload : 执行输出: \n\n${out.toString("UTF-8")}")
+            println("CommitUploadPlugin: ${project.name}_$TASKNAME_COMMIT_UPLOAD : 执行输出: \n\n${out.toString("UTF-8")}")
 
             // 如果脚本返回非0，异常退出
             if (task.execResult?.exitValue != 0){

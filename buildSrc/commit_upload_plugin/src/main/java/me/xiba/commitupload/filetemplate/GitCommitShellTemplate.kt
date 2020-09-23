@@ -20,13 +20,12 @@ class GitCommitShellTemplate {
                 "\n" +
                 "echo \"########## 开始提交 ##########\"\n" +
                 "\n" +
+                "echo \"commitMessage: \$1\"\n" +
+                "\n" +
                 "git add -A\n" +
                 "git status\n" +
                 "\n" +
                 "#echo \"########## 请输入提交信息 ##########\"\n" +
-                "#read commitMessage\n" +
-                "\n" +
-                "echo \"\$commitMessage\"\n" +
                 "\n" +
                 "git commit -m \"\$1\"\n" +
                 "\n" +
@@ -50,7 +49,7 @@ class GitCommitShellTemplate {
                 "  exit 1\n" +
                 "fi\n" +
                 "\n" +
-                "git push `git symbolic-ref --short -q HEAD`\n" +
+                "git push -u origin\n" +
                 "if [ \$? -ne 0 ]\n" +
                 "then\n" +
                 "  echo \"git push 错误\"\n" +
