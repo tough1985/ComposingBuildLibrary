@@ -61,6 +61,7 @@ class CommitUploadPlugin : Plugin<Project> {
 
             // 如果文件存在 读取文件内容到gitCommitProperties
             if (gitCommitPropertiesFile.exists()){
+                // 避免中文乱码
                 gitCommitProperties.load(
                         InputStreamReader(gitCommitPropertiesFile.inputStream(), "UTF-8"))
             } else {
